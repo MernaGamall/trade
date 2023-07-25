@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-import 'package:trade/view/authentication_screens/register_screen.dart';
+import 'package:trade/view/authentication_screens/login_screen.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({Key? key}) : super(key: key);
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
+  // final _auth = FirebaseAuth.instance;
   bool _saving = false;
-  bool isObscure = true;
- // final _auth = FirebaseAuth.instance;
   late String email;
   late String password;
-  GlobalKey<FormState> formKey = GlobalKey();
+  bool isObscure = true;
+
   bool internet = true;
   // @override
   // void initState() {
+  //   getCurrentUser();
   //   super.initState();
   //   final subscription = Connectivity()
   //       .onConnectivityChanged
@@ -35,8 +36,10 @@ class _LoginScreenState extends State<LoginScreen> {
   //   });
   // }
 
+  GlobalKey<FormState> formKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
+    /// TODO : no internet screen
     // if (internet == false) {
     //   return NoInternetScreen();
     // }
@@ -75,7 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: TextFormField(
                             validator: (String? value) {
                               if (value == "" || value!.contains("@ / .com")) {
-                                return "ادخل الحساب";
+                                return " من فضلك أدخل الحساب و يجب ان يحتوي علي @ / com. ";
                               }
                               return null;
                             },
@@ -85,7 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             },
                             decoration: InputDecoration(
                               border: InputBorder.none,
-                              hintText: "اكتب اسم الحساب",
+                              hintText: "اكتب اسم الحساب الجديد",
                             ),
                           ),
                         ),
@@ -105,8 +108,10 @@ class _LoginScreenState extends State<LoginScreen> {
                               Expanded(
                                 child: TextFormField(
                                   validator: (String? value) {
-                                    if (value == "") {
-                                      return "ادخل كلمة المرور الصحيحه";
+                                    if (value == "" ||
+                                        value!.contains("0123456789") ||
+                                        value.length < 6) {
+                                      return "  كلمة المرور يجب ان تحتوي علي رقم ولا تقل عن 6 حروف ";
                                     }
                                     return null;
                                   },
@@ -117,7 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   },
                                   decoration: InputDecoration(
                                     border: InputBorder.none,
-                                    hintText: "كلمة المرور",
+                                    hintText: " كلمة المرور",
                                   ),
                                 ),
                               ),
@@ -156,12 +161,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: ElevatedButton(
                           style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all(
-                              Colors.brown,
+                              Colors.red[700],
                             ),
                           ),
                           onPressed: () async {
                             if (formKey.currentState!.validate()) {
-                              // await validation_done(context);
+                              //  await validation_done(context);
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
@@ -172,8 +177,10 @@ class _LoginScreenState extends State<LoginScreen> {
                             }
                           },
                           child: Text(
-                            "تسجيل الدخول",
-                            style: TextStyle(fontSize: 25),
+                            "إنشاء حساب جديد",
+                            style: TextStyle(
+                              fontSize: 25,
+                            ),
                           ),
                         ),
                       ),
@@ -181,11 +188,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         onPressed: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => RegisterScreen(),
+                              builder: (context) => LoginScreen(),
                             ),
                           );
                         },
-                        child: Text("تسجيل حساب جديد"),
+                        child: Text("لديك حساب بالفعل"),
                       )
                     ],
                   ),
@@ -197,37 +204,39 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-  //
-  // Future<void> validation_done(BuildContext context) async {
-  //   final isExistingUser = await checkUserExists(email);
-  //   if (isExistingUser) {
-  //     await sign_in_user(context);
-  //   } else {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(
-  //         backgroundColor: Colors.blueAccent,
-  //         content: Text("الحساب غير مسجل"),
-  //       ),
-  //     );
-  //   }
-  // }
+/// TODO : sighn in method
 
-  // Future<void> sign_in_user(BuildContext context) async {
-  //   setState(() {
-  //     _saving = true;
-  //   });
-  //   try {
-  //     await _auth.signInWithEmailAndPassword(email: email, password: password);
-  //     Navigator.of(context).pushReplacement(
-  //       MaterialPageRoute(
-  //         builder: (context) => HomeScreen(),
-  //       ),
-  //     );
-  //     setState(() {
-  //       _saving = false;
-  //     });
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  // }
+//   Future<void> validation_done(BuildContext context) async {
+//     final isExistingUser = await checkUserExists(email);
+//     if (isExistingUser) {
+//       ScaffoldMessenger.of(context).showSnackBar(
+//         SnackBar(
+//           backgroundColor: Colors.blueAccent,
+//           content: Text("الحساب موجود بالفعل"),
+//         ),
+//       );
+//     } else {
+//       await add_new_user(context);
+//     }
+//   }
+//
+//   Future<void> add_new_user(BuildContext context) async {
+//     setState(() {
+//       _saving = true;
+//     });
+//     try {
+//       await _auth.createUserWithEmailAndPassword(
+//           email: email, password: password);
+//       Navigator.of(context).pushReplacement(
+//         MaterialPageRoute(
+//           builder: (context) => HomeScreen(),
+//         ),
+//       );
+//       setState(() {
+//         _saving = false;
+//       });
+//     } catch (e) {
+//       print("the problem $e");
+//     }
+//   }
 }
